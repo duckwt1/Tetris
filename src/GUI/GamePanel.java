@@ -16,6 +16,7 @@ public class GamePanel extends JPanel implements Runnable{
         this.setLayout(null);
 
         pm=new PlayManager();
+
     }
     public void launchGame(){
         gameThread=new Thread(this);
@@ -48,7 +49,7 @@ public class GamePanel extends JPanel implements Runnable{
         pm.update();
     }
     public void paintComponent(Graphics g){
-        super.paintComponents(g);
+        super.paintComponent(g);
 
         Graphics2D g2= (Graphics2D) g;
         pm.draw(g2);
