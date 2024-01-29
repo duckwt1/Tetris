@@ -53,7 +53,7 @@ public class L2_Mino extends Mino{
     public void direction3() {
 
     }
-    @Override
+
     public void direction4() {
 
     }
