@@ -22,4 +22,22 @@ public class L1_Mino extends Mino{
         block[3].y = block[0].y + Block.size;
 
     }
+
+    @Override
+    public void direction1() {
+
+    }
+
+    @Override
+    public void direction2() {
+    }
+
+    @Override
+    public void direction3() {
+
+    }
+
+    @Override
+    public void direction4() {
+    }
 }

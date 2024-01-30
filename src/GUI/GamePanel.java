@@ -1,5 +1,7 @@
 package GUI;
 
+import Controller.KeyHandler;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -12,11 +14,13 @@ public class GamePanel extends JPanel implements Runnable{
 
     public GamePanel(){
         this.setPreferredSize(new Dimension(width, height));
-        //this.setBackground(Color.black);
+        this.setBackground(Color.black);
         this.setLayout(null);
 
         pm=new PlayManager();
 
+        this.addKeyListener(new KeyHandler());
+        this.setFocusable(true);
     }
     public void launchGame(){
         gameThread=new Thread(this);
