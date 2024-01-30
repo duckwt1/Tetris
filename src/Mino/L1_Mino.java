@@ -6,8 +6,6 @@ public class L1_Mino extends Mino{
     public L1_Mino(){
         create(Color.ORANGE);
     }
-
-    @Override
     public void setXY(int x, int y) {
         // 0        b1
         // 0        b0
@@ -22,22 +20,69 @@ public class L1_Mino extends Mino{
         block[3].y = block[0].y + Block.size;
 
     }
-
-    @Override
     public void direction1() {
+        // 0        b1
+        // 0        b0
+        // 0 0      b2 b3
+        tempB[0].x = block[0].x ;
+        tempB[0].y = block[0].y;
+        tempB[1].x = block[0].x;
+        tempB[1].y = block[0].y - Block.size;
+        tempB[2].x = block[0].x;
+        tempB[2].y = block[0].y + Block.size;
+        tempB[3].x = block[0].x + Block.size;
+        tempB[3].y = block[0].y + Block.size;
 
+        updateXY(1);
     }
 
-    @Override
     public void direction2() {
+        // 0 0 0
+        // 0
+
+        tempB[0].x = block[0].x ;
+        tempB[0].y = block[0].y;
+        tempB[1].x = block[0].x + Block.size;
+        tempB[1].y = block[0].y;
+        tempB[2].x = block[0].x - Block.size;
+        tempB[2].y = block[0].y;
+        tempB[3].x = block[0].x - Block.size;
+        tempB[3].y = block[0].y + Block.size;
+
+        updateXY(2);
     }
 
-    @Override
+
     public void direction3() {
+        //  0 0
+        //    0
+        //    0
 
+        tempB[0].x = block[0].x ;
+        tempB[0].y = block[0].y;
+        tempB[1].x = block[0].x;
+        tempB[1].y = block[0].y + Block.size;
+        tempB[2].x = block[0].x;
+        tempB[2].y = block[0].y - Block.size;
+        tempB[3].x = block[0].x - Block.size;
+        tempB[3].y = block[0].y - Block.size;
+
+        updateXY(3);
     }
 
-    @Override
     public void direction4() {
+        //       0
+        //   0 0 0
+
+        tempB[0].x = block[0].x ;
+        tempB[0].y = block[0].y;
+        tempB[1].x = block[0].x - Block.size;
+        tempB[1].y = block[0].y;
+        tempB[2].x = block[0].x + Block.size;
+        tempB[2].y = block[0].y;
+        tempB[3].x = block[0].x - Block.size;
+        tempB[3].y = block[0].y - Block.size;
+
+        updateXY(4);
     }
 }
