@@ -1,5 +1,7 @@
 package Controller;
 
+import GUI.GamePanel;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -26,8 +28,11 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_ESCAPE){
             if (pause){
                 pause = false;
+                GamePanel.music.play(0, true);
+                GamePanel.music.loop();
             } else {
                 pause = true;
+                GamePanel.music.stop();
             }
         }
     }
