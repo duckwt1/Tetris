@@ -26,6 +26,18 @@ public class PlayManager {
     //Others
     public static int dropInterval = 60; //Minos drop in every 60 frames
 
+    // Effect
+    boolean effectCounterOn;
+    int effectCounter;
+    ArrayList<Integer> effectY = new ArrayList<>();
+
+    boolean gameOver;
+
+    // Score
+    int level = 1;
+    int score;
+    int line;
+
     public PlayManager(){
         //Main play area frame
         left_x = (GamePanel.width / 2) - (width / 2); // =460
@@ -70,6 +82,14 @@ public class PlayManager {
             staticBlocks.add(currentMino.block[2]);
             staticBlocks.add(currentMino.block[3]);
 
+            // Check if the game is over
+            if (currentMino.block[0].x == mino_startX && currentMino.block[0].y == mino_startY){
+                // This means the current mino immediately collided a block. So it's xy are the same with the next mino
+                gameOver = true;
+                GamePanel.se.play(2,false);
+                GamePanel.music.stop();
+            }
+
             currentMino.deactivating = false;
 
             // Replace the current mino with the next mino
@@ -77,9 +97,74 @@ public class PlayManager {
             currentMino.setXY(mino_startX, mino_startY);
             nextMino = randomMino();
             nextMino.setXY(nextMino_X, nextMino_Y);
+
+            // When a mino becomes inactive, check if line(s) can be deleted
+            checkDelete();
+
         } else currentMino.update();
+    }
+    private void checkDelete(){
+        int x = left_x;
+        int y = top_y;
+        int blockCount = 0;
+        int lineCount = 0;
 
+        while (x < right_x && y < bottom_y){
+            for (int i = 0; i < staticBlocks.size(); i++){
+                if (staticBlocks.get(i).x == x && staticBlocks.get(i).y == y){
+                    // Increase the count if there is a static block
+                    blockCount++;
+                }
+            }
 
+            x += Block.size;
+
+            if (x == right_x){
+
+                // If the blockCount reaches 12 , that means the current y line is all filled with blocks. So we can delete them
+                if (blockCount == 12){
+
+                    effectCounterOn = true;
+                    effectY.add(y);
+
+                    for (int i = staticBlocks.size() - 1; i > -1; i--){ // Don't use loop from 0 to size of staticBlock because we remove the index of the arraylist
+                        // Remove all the blocks in current y line
+                        if (staticBlocks.get(i).y == y){
+                            staticBlocks.remove(i);
+                        }
+                    }
+                    lineCount++;
+                    line++;
+
+                    // Increase drop speed (1 is the fastest)
+                    if (line % 10 == 0 && dropInterval > 1){
+                        level++;
+                        if (dropInterval > 10){
+                            dropInterval -= 10;
+                        } else {
+                            dropInterval -= 1;
+                        }
+                    }
+
+                    // A line has been deleted, so need to slide down all blocks above it
+                    for (int i = 0; i < staticBlocks.size(); i++){
+                        if (staticBlocks.get(i).y < y){
+                            staticBlocks.get(i).y += Block.size;
+                        }
+                    }
+                }
+
+                blockCount = 0;
+                x = left_x;
+                y += Block.size;
+            }
+            // Add score
+            if (lineCount > 0){
+                GamePanel.se.play(1,false);
+                int singleLineScore = 10 * level;
+                score += singleLineScore * lineCount;
+            }
+        }
     }
     public void draw(Graphics2D g2){
         //Draw play area
@@ -91,9 +176,18 @@ public class PlayManager {
         int x = right_x + 100;
         int y = bottom_y - 200;
         g2.drawRect(x, y, 200, 200);
-        g2.setFont(new Font("Arial",Font.PLAIN,20));
+        g2.setFont(new Font("Arial",Font.PLAIN,30));
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        g2.drawString("NEXT",x+70, y+30);
+        g2.drawString("Next",x+70, y+30);
+
+        // Draw score
+        g2.drawRect(x, top_y, 250 , 230);
+        x += 40;
+        y = top_y + 50;
+        g2.drawString("Level: "+ level, x, y); y+=70;
+        g2.drawString("Lines: "+ line, x, y); y+=70;
+        g2.drawString("Score: "+ score, x, y);
+
 
         //Draw current mino
         if (currentMino != null){
@@ -108,9 +202,30 @@ public class PlayManager {
             staticBlocks.get(i).draw(g2);
         }
 
-        // Draw pause
-        g2.setColor(Color.yellow);
+        // Draw effect
+        if (effectCounterOn){
+            effectCounter++;
+
+            g2.setColor(Color.white);
+            for (int i = 0; i < effectY.size(); i++){
+                g2.fillRect(left_x, effectY.get(i), width, Block.size );
+            }
+
+            if (effectCounter == 7){
+                effectCounterOn = false;
+                effectCounter = 0;
+                effectY.clear();
+            }
+        }
+
+        // Draw pause and game over
+        g2.setColor(Color.white);
         g2.setFont(g2.getFont().deriveFont(50f));
+        if (gameOver){
+            x = left_x + 50;
+            y = top_y + 320;
+            g2.drawString("Game Over",x, y);
+        }
         if (KeyHandler.pause){
             x = left_x + 95;
             y = top_y + 320;

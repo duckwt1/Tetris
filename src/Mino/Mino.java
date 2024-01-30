@@ -1,6 +1,7 @@
 package Mino;
 
 import Controller.KeyHandler;
+import GUI.GamePanel;
 import GUI.PlayManager;
 
 import java.awt.*;
@@ -143,6 +144,7 @@ public class Mino {
                 case 4: direction1(); break;
             }
             KeyHandler.up = false;
+            GamePanel.se.play(3,false);
         }
 
         checkMovementCollision();
@@ -184,6 +186,9 @@ public class Mino {
         }
 
         if (bottom){
+            if (!deactivating){
+                GamePanel.se.play(4,false);
+            }
             deactivating = true;
         }
         else  {
